@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Purple Hedgehog AI – Validation-First AI Tooling</title>
+  <link rel="icon" type="image/png" href="hedgehog_logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #fff;
+      background: #0a0a0f;
+      line-height: 1.6;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1.25rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10, 10, 15, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(176, 132, 255, 0.2);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #b084ff;
+      text-decoration: none;
+    }
+
+    .logo img {
+      height: 32px;
+      width: auto;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+    }
+
+    .nav-links a {
+      color: #a0a0a0;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      background: radial-gradient(ellipse at top, rgba(176, 132, 255, 0.08) 0%, transparent 60%);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero h1 .line1 {
+      display: block;
+      color: #fff;
+    }
+
+    .hero h1 .line2 {
+      display: block;
+      background: linear-gradient(135deg, #b084ff 0%, #87f5a3 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .tagline {
+      font-size: 1.25rem;
+      color: #a0a0a0;
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn-primary {
+      background: #b084ff;
+      color: #0a0a0f;
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: #c9a8ff;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #fff;
+      padding: 0.875rem 2rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: #b084ff;
+      color: #b084ff;
+    }
+
+    /* Section Styles */
+    section {
+      padding: 6rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #b084ff;
+      margin-bottom: 1rem;
+    }
+
+    .section-heading {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .section-desc {
+      font-size: 1.1rem;
+      color: #a0a0a0;
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    /* Product Section */
+    .product-card {
+      background: linear-gradient(135deg, rgba(176, 132, 255, 0.15) 0%, rgba(135, 245, 163, 0.08) 100%);
+      border: 1px solid rgba(176, 132, 255, 0.35);
+      border-radius: 16px;
+      padding: 3rem;
+      margin-bottom: 2rem;
+    }
+
+    .product-card h3 {
+      font-size: 1.75rem;
+      margin-bottom: 0.5rem;
+      color: #87f5a3;
+    }
+
+    .product-card .subtitle {
+      font-size: 1.1rem;
+      color: #b084ff;
+      margin-bottom: 1.5rem;
+    }
+
+    .product-card p {
+      color: #c0c0c0;
+      margin-bottom: 1.5rem;
+      max-width: 700px;
+    }
+
+    .product-card a {
+      color: #b084ff;
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: gap 0.2s;
+    }
+
+    .product-card a:hover {
+      gap: 0.75rem;
+    }
+
+    /* Research Section */
+    .research-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .research-item {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 2rem;
+      transition: border-color 0.2s;
+    }
+
+    .research-item:hover {
+      border-color: rgba(176, 132, 255, 0.5);
+    }
+
+    .research-item h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    .research-item p {
+      font-size: 0.95rem;
+      color: #808080;
+      margin-bottom: 1rem;
+    }
+
+    .research-item a {
+      color: #b084ff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .research-item a:hover {
+      text-decoration: underline;
+    }
+
+    /* About Section */
+    .about-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: center;
+    }
+
+    .about-text p {
+      color: #a0a0a0;
+      margin-bottom: 1.5rem;
+    }
+
+    .about-text p strong {
+      color: #fff;
+    }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+      padding: 2rem;
+      background: rgba(176, 132, 255, 0.08);
+      border: 1px solid rgba(176, 132, 255, 0.2);
+      border-radius: 12px;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #b084ff;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #808080;
+      margin-top: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 3rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-left {
+      color: #606060;
+      font-size: 0.875rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      color: #808080;
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: #b084ff;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      section {
+        padding: 4rem 1.5rem;
+      }
+
+      .about-content {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      footer {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <a href="#" class="logo">
+      <img src="hedgehog_logo.png" alt="Purple Hedgehog AI">
+      Purple Hedgehog AI
+    </a>
+    <div class="nav-links">
+      <a href="#product">Product</a>
+      <a href="#research">Research</a>
+      <a href="#about">About</a>
+      <a href="mailto:dean_brown1@hotmail.com">Contact</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <h1>
+      <span class="line1">Validation-First</span>
+      <span class="line2">AI Tooling</span>
+    </h1>
+    <p class="tagline">
+      AI output should be treated as fallible by default, especially in real systems. 
+      We build tools that don't trade speed for correctness.
+    </p>
+    <div class="cta-buttons">
+      <a href="https://dadlas.ai" class="btn-primary" target="_blank">Try Dadlas</a>
+      <a href="#research" class="btn-secondary">View Research</a>
+    </div>
+  </section>
+
+  <section id="product">
+    <p class="section-title">Product</p>
+    <h2 class="section-heading">Built for Real Systems</h2>
+    <p class="section-desc">Tools designed for developers who need to ship fast without breaking things.</p>
+
+    <div class="product-card">
+      <h3>Dadlas</h3>
+      <p class="subtitle">Validation-First AI Coding Assistant</p>
+      <p>
+        A practical AI assistant designed to preserve development speed while actively protecting correctness. 
+        Dadlas treats every output as potentially wrong until proven otherwise—because in production systems, 
+        "probably right" isn't good enough.
+      </p>
+      <p style="color: #87f5a3; font-size: 0.95rem; margin-bottom: 1.5rem;">
+        Solo Dev edition coming soon — agentic workflows with full repository awareness.
+      </p>
+      <a href="https://dadlas.ai" target="_blank">Visit Dadlas →</a>
+    </div>
+  </section>
+
+  <section id="research">
+    <p class="section-title">Research</p>
+    <h2 class="section-heading">Published Work</h2>
+    <p class="section-desc">Exploring how to make AI systems more reliable, trainable, and honest about what they don't know.</p>
+
+    <div class="research-grid">
+      <div class="research-item">
+        <h4>SchemaBank: Sparse Routing as Training Curriculum for Parameter-Efficient Fine-Tuning</h4>
+        <p>
+          A three-stage training curriculum using sparse routing to improve parameter-efficient fine-tuning. 
+          Achieves 3.1× improvement over standard LoRA on GSM8K mathematical reasoning with Qwen2-0.5B.
+        </p>
+        <a href="https://zenodo.org/records/18244185" target="_blank">View Publication →</a>
+      </div>
+
+      <div class="research-item">
+        <h4>Bayesian-Gated Selective Learning: A Framework for Post-Training Knowledge Acquisition</h4>
+        <p>
+          A conceptual framework for controlled post-deployment learning. Addresses hallucination through 
+          uncertainty-aware knowledge acquisition, treating uncertainty as a proxy for prior strength.
+        </p>
+        <a href="https://zenodo.org/records/18244961" target="_blank">View Publication →</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <p class="section-title">About</p>
+    <h2 class="section-heading">The Company</h2>
+    
+    <div class="about-content">
+      <div class="about-text">
+        <p>
+          <strong>Purple Hedgehog AI LLC</strong> was founded by Dean Brown, a Senior Staff Consultant 
+          with over 20 years of enterprise technology experience specializing in ServiceNow implementations, 
+          CMDB governance, and IT asset management.
+        </p>
+        <p>
+          After watching organizations struggle to adopt AI responsibly—moving fast but breaking things, 
+          or moving safely but never shipping—Dean started building tools that refuse to compromise.
+        </p>
+        <p>
+          The result is a validation-first approach: AI that treats its own output as fallible by default. 
+          We build practical tooling for developers and enterprises who need speed without sacrificing correctness.
+        </p>
+      </div>
+
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-number">20+</div>
+          <div class="stat-label">Years Enterprise Experience</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">2</div>
+          <div class="stat-label">Published Papers</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">3.1×</div>
+          <div class="stat-label">GSM8K Improvement</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">1</div>
+          <div class="stat-label">Shipped Product</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-left">
+      © 2025 Purple Hedgehog AI LLC. All rights reserved.
+    </div>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/edward-dean-brown-14946939" target="https://www.linkedin.com/in/edward-dean-brown-14946939">LinkedIn</a>
+      <a href="https://dadlas.ai" target="https://dadlas.ai">Dadlas</a>
+      <a href="mailto:dean@purplehedgehogai.com">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>
